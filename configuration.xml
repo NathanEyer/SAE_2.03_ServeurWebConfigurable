@@ -1,0 +1,8 @@
+<webconf>
+    <port>80</port>
+    <root>/var/www</root>
+    <accept>192.168.0.0/24</accept>
+    <reject> 192.168.1.0/24</reject>
+    <accesslog>/var/log/myweb/access.log</accesslog>
+    <errorlog>/var/log/myweb/error.log</errorlog>
+</webconf>
