@@ -80,14 +80,21 @@ public class HttpServer {
         }
 
         // Lecture du fichier et envoi du contenu au client
-        FileInputStream fichier = new FileInputStream(file);
-        byte[] content = fichier.readAllBytes();
+        try{
+            FileInputStream fichier = new FileInputStream(file);
+            byte[] content = fichier.readAllBytes();
+            dos.writeBytes("HTTP/1.1 200 OK\r\n");
+            dos.writeBytes("Longueur du document: " + content.length + "\r\n");
+            dos.writeBytes("\r\n");
+            dos.write(content);
+            dos.flush();
+            fichier.close();
+        }catch (FileNotFoundException e){
+            System.err.println("Exception " + e);
+        }
 
-        dos.writeBytes("HTTP/1.1 200 OK\r\n");
-        dos.writeBytes("Longueur du document: " + content.length + "\r\n");
-        dos.writeBytes("\r\n");
-        dos.write(content);
-        dos.flush();
-        fichier.close();
+
+
+
     }
 }
