@@ -1,3 +1,6 @@
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
+import javax.xml.parsers.*;
 import java.net.*;
 import java.io.*;
 
@@ -5,43 +8,103 @@ import java.io.*;
  * Serveur Web configurable
  */
 public class HttpServer {
-    private static ServerSocket srv;
+    private static final String CONFIG_XML = "configuration.xml";
+    private static int port;
+    private static String lien;
+    private static Document config;
+    private String accept;
+    private String reject;
+    private static String access;
+    private static String error;
+
+    /**
+     * Récupére les valeurs du fichier xml
+     */
+    public HttpServer(){
+        // Récupération de la balise port
+        NodeList portTag  = config.getElementsByTagName("port");
+        Node portNode = portTag.item(0);
+        String portString = portNode.getTextContent();
+
+        // Définit le port, utilise 80 par défaut si aucun argument n'est donné
+        if(portString.isEmpty()){
+            port = 80;
+        }else port = Integer.parseInt(portString);
+
+        //Récupération de la balise root
+        NodeList rootTag = config.getElementsByTagName("root");
+        Node rootNode = rootTag.item(0);
+        lien = rootNode.getTextContent();
+
+        //Récupération de la balise accept
+        NodeList acceptTag = config.getElementsByTagName("accept");
+        Node acceptNode = acceptTag.item(0);
+        accept = acceptNode.getTextContent();
+
+        //Récupération de la balise reject
+        NodeList rejectTag = config.getElementsByTagName("reject");
+        Node rejectNode = rejectTag.item(0);
+        reject = rejectNode.getTextContent();
+
+        //Récupération de la balise access
+        NodeList accessTag = config.getElementsByTagName("accesslog");
+        Node accessNode = accessTag.item(0);
+        access = accessNode.getTextContent();
+
+        //Récupération de la balise error
+        NodeList errorTag = config.getElementsByTagName("errorlog");
+        Node errorNode = errorTag.item(0);
+        error = errorNode.getTextContent();
+    }
+
     /**
      * Méthode principale de lancement du processus
      * @param args potentiel argument
      */
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException {
         try {
-            // Définit le port, utilise 80 par défaut si aucun argument n'est donné
-            int port = (args.length > 0) ? Integer.parseInt(args[0]) : 80;
+            //Initialisation des constructeurs
+            DocumentBuilderFactory protection = DocumentBuilderFactory.newInstance();
+            DocumentBuilder construction = protection.newDocumentBuilder();
 
+            //Ouverture du fichier
+            config = construction.parse(CONFIG_XML);
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            throw new RuntimeException();
+        }
+
+        //Création du serveur
+        HttpServer server = new HttpServer();
+
+        //Suppression des fichiers
+        File accessSup = new File(access);
+        accessSup.delete();
+        File errorSup = new File(error);
+        errorSup.delete();
+
+        server.creationServeur();
+    }
+
+    public void creationServeur(){
+        try {
             //Ouvre le serveur sur le port
-            srv = new ServerSocket(port);
+            ServerSocket srv = new ServerSocket(port);
 
             //Informations de suivi du processus
-            System.out.println("CTRL + C pour arrêter le serveur");
-            System.out.println("En attente d'une connexion sur le port " + port + "...");
-            System.out.println("Veuillez entrer l'adresse : http://localhost:" + port + "/index.html dans votre navigateur");
+            System.out.println("En attente de connexion sur le port " + port + "...");
+            System.out.println("Afficher la page: http://localhost:" + port + "/index.html");
 
             //Condition infinie
             while (true) {
                 // Accepte une nouvelle connexion
                 Socket socket = srv.accept();
-                System.out.println("Connexion du client " + socket.getInetAddress());
+                ecritureAccess("Connexion du client " + socket.getInetAddress());
 
                 //Traite la requête
                 traitement_requete(socket);
             }
         } catch (IOException e) {
-            System.err.println("Exception " + e);
-        } finally {
-            if (srv != null && !srv.isClosed()) {
-                try {
-                    srv.close();
-                } catch (IOException e) {
-                    System.err.println("Exception" + e);
-                }
-            }
+            ecritureError("" + e);
         }
     }
 
@@ -50,17 +113,10 @@ public class HttpServer {
      * @param socket connexion
      * @throws IOException exception
      */
-    private static void traitement_requete(Socket socket) throws IOException {
+    private void traitement_requete(Socket socket) throws IOException {
         // Initialisation des flux pour lire la requête et envoyer la réponse
         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-
-        //Réponse d'erreur par défaut
-        String reponse404 = """
-                HTTP/1.1 404 Not Found\r
-                Content-Type: text/html\r
-                \r
-                <html><body><h1>404 Not Found</h1></body></html>""";
 
         // Lecture de la requête
         String requete = br.readLine();
@@ -70,29 +126,25 @@ public class HttpServer {
         }
 
         //affichage de la requête reçue
-        System.out.println("Requête reçue: " + requete);
+        this.ecritureAccess("Requête reçue: " + requete);
 
         // Séparation de la requête pour obtenir le chemin du fichier demandé
         String[] part = requete.split(" ");
 
-        if (part.length < 2) {
-            //Envoie la réponse par défaut
-            dos.writeBytes(reponse404);
-            dos.flush();
-            return;
-        }
-
         // Extraction du chemin du fichier, on retire le premier élément (/) de la chaîne de caractères
-        String lien = part[1].substring(1);
+        String lienB = lien + "/" + part[1].substring(1);
 
-        //Affiche le index.html par défaut
-        if (lien.isEmpty()) {
-            // Page par défaut
-            lien = "index.html";
-        }
+        //Réponse d'erreur par défaut
+        String reponse404 = """
+                HTTP/1.1 404 Not Found\r
+                Content-Type: text/html\r
+                \r
+                <html><body><h1>Le document <a href=\"""" + lienB + "\">" + lienB
+                + "</a> n'existe pas</h1></body></html>";
+
 
         //Crée un fichier
-        File file = new File(lien);
+        File file = new File(lienB);
         if (!file.exists() || file.isDirectory()) {
             dos.writeBytes(reponse404);
             dos.flush();
@@ -112,7 +164,33 @@ public class HttpServer {
             dos.flush();
             fichier.close();
         }catch (FileNotFoundException e){
-            System.err.println("Exception " + e);
+            ecritureError("" + e);
+        }
+    }
+
+    /**
+     * Méthode d'écriture dans le fichier access.log
+     * @param ajout chaîne à ajouter
+     */
+    public void ecritureAccess(String ajout){
+        try (FileWriter fw = new FileWriter(access, true)){
+            //Ajout de la chaîne de caractère
+            fw.write(ajout + "\n");
+        } catch (IOException e) {
+            ecritureError("" + e);
+        }
+    }
+
+    /**
+     * Méthode d'écriture dans le fichier error.log
+     * @param ajout chaîne à ajouter
+     */
+    public void ecritureError(String ajout){
+        try (FileWriter fw = new FileWriter(error, true)){
+            //Ajout de la chaîne de caractère
+            fw.write(ajout + "\n");
+        } catch (IOException e) {
+            ecritureError("" + e);
         }
     }
 }
