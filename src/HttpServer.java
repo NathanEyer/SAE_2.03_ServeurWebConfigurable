@@ -3,7 +3,6 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.*;
 import java.net.*;
 import java.io.*;
-import java.util.List;
 
 /**
  * Serveur Web configurable
@@ -13,8 +12,8 @@ public class HttpServer {
     private static int port;
     private static String lien;
     private static Document config;
-    private String accept;
-    private String reject;
+    private final String accept;
+    private final String reject;
     private static String access;
     private static String error;
 
@@ -87,9 +86,10 @@ public class HttpServer {
     }
 
     public void creationServeur(){
+        ServerSocket srv;
         try {
             //Ouvre le serveur sur le port
-            ServerSocket srv = new ServerSocket(port);
+            srv = new ServerSocket(port);
 
             //Informations de suivi du processus
             System.out.println("En attente de connexion sur le port " + port + "...");
