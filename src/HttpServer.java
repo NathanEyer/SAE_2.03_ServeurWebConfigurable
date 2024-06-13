@@ -21,6 +21,7 @@ public class HttpServer {
             // Informations de suivi du processus
             System.out.println("En attente de connexion sur le port " + config.getPort() + "...");
             System.out.println("Afficher la page: http://localhost:" + config.getPort() + "/index.html");
+            System.out.println("Afficher l'état de la machine: http://localhost:" + config.getPort() + "/status");
 
             // Condition infinie
             while (true) {

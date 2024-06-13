@@ -28,7 +28,8 @@ public class Gerer_Requete {
 
         //Récupération du lien
         String[] part = requete.split(" ");
-        String lienB = config.getRoot() + "/" + part[1].substring(1);
+        String demande = part[1].substring(1);
+        String lienB = config.getRoot() + "/" + demande;
 
         //Si l'autorisation est refusée, affichage de la page 403
         if(refuse){
@@ -43,8 +44,31 @@ public class Gerer_Requete {
                 HTTP/1.1 404 Not Found\r
                 Content-Type: text/html\r
                 \r
-                <html><body><h1>Le document <a href=\"""" + lienB + "\">" + lienB
+                <html><body><h1>Le document <a href=\"""" + demande + "\">" + demande
                 + "</a> n'existe pas, sorry.</h1></body></html>";
+
+        if(demande.equals("status")){
+            File file = new File("var/www/status.html");
+            try (FileInputStream fichier = new FileInputStream(file)) {
+                //Lecture du fichier
+                byte[] content = fichier.readAllBytes();
+                dos.writeBytes("HTTP/1.1 200 OK\r\n");
+                dos.writeBytes("\r\n");
+                dos.write(content);
+                dos.flush();
+                return;
+            } catch (FileNotFoundException e) {
+                //Affichage de la page d'erreur
+                dos.writeBytes(reponse404);
+                dos.flush();
+                //Ecriture de l'erreur
+                Log.write(e.getMessage(), config.getError());
+                Log.write("Connexion refusée: " + e.getMessage(), config.getAccess());
+                return;
+            }
+        }
+        System.out.println(lienB);
+
 
         //Ouverture du =='un fichier
         File file = new File(lienB);
