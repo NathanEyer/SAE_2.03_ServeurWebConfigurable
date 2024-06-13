@@ -21,13 +21,13 @@ public class HttpServer {
             while (true) {
                 // Accepte une nouvelle connexion
                 Socket socket = srv.accept();
-                Log.write("Connexion du client " + socket.getInetAddress(), config.getAccessLogPath());
+                Log.write("Connexion du client " + socket.getInetAddress(), config.getAccess());
 
                 // Traite la requête
                 Gerer_Requete.handleRequest(socket, config);
             }
         } catch (IOException e) {
-            Log.write(e.getMessage(), config.getErrorLogPath());
+            Log.write(e.getMessage(), config.getError());
         }
     }
 }

@@ -10,7 +10,7 @@ public class Log {
         try (FileWriter fw = new FileWriter(logPath, true)) {
             fw.write(message + "\n");
         } catch (IOException e) {
-            e.printStackTrace();
+            writeLog("" + e, logPath);
         }
     }
 
@@ -18,7 +18,7 @@ public class Log {
         try (FileWriter fw = new FileWriter(logPath, false)) {
             fw.write("");
         } catch (IOException e) {
-            e.printStackTrace();
+            writeLog("" + e, logPath);
         }
     }
 }
