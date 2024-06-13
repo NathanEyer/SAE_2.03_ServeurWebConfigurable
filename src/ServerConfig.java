@@ -1,6 +1,5 @@
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
-
 import javax.xml.parsers.*;
 import java.io.File;
 import java.io.IOException;
@@ -10,18 +9,17 @@ import java.io.IOException;
  * Cette classe lit les paramètres de configuration depuis un fichier XML.
  */
 public class ServerConfig {
+    //Valeurs récupérées dans le xml
     private final int port;
     private final String root;
     private final String access;
     private final String error;
 
     /**
-     * Constructeur de la classe ServerConfig.
-     * Lit le fichier XML de configuration et initialise les variables d'instance.
-     *
-     * @param configPath Chemin vers le fichier XML de configuration.
+     * Lit le fichier XML de configuration et initialise les variables.
+     * @param nomXml Chemin vers le fichier XML de configuration.
      */
-    public ServerConfig(String configPath){
+    public ServerConfig(String nomXml){
         //Initialisation des constructeurs XML
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder;
@@ -30,22 +28,21 @@ public class ServerConfig {
         //Récupération des valeurs du xml
         try {
             builder = factory.newDocumentBuilder();
-            xml = builder.parse(new File(configPath));
+            xml = builder.parse(new File(nomXml));
         } catch (ParserConfigurationException | SAXException | IOException e) {
             Log.write(e.getMessage(), this.getError());
         }
 
         // Récupère et initialise les valeurs des balises de configuration avec des valeurs par défaut si nécessaire
-        this.port = Integer.parseInt(getTagValue(xml, "port", "80"));
-        this.root = getTagValue(xml, "root", "/");
-        this.access = getTagValue(xml, "accesslog", "access.log");
-        this.error = getTagValue(xml, "errorlog", "error.log");
+        this.port = Integer.parseInt(getTagValue(xml, "port", "8080"));
+        this.root = getTagValue(xml, "root", "var/www");
+        this.access = getTagValue(xml, "accesslog", "var/log/myweb/access.log");
+        this.error = getTagValue(xml, "errorlog", "var/log/myweb/error.log");
     }
 
     /**
      * Récupère la valeur d'un tag dans le document XML.
      * Si le tag n'est pas présent, retourne une valeur par défaut.
-     *
      * @param doc Document XML.
      * @param tag Nom du tag.
      * @param defaultValue Valeur par défaut si le tag n'est pas présent.
@@ -59,7 +56,6 @@ public class ServerConfig {
 
     /**
      * Retourne le port du serveur.
-     *
      * @return Port du serveur.
      */
     public int getPort() {
@@ -68,7 +64,6 @@ public class ServerConfig {
 
     /**
      * Retourne le chemin racine du serveur.
-     *
      * @return Chemin racine du serveur.
      */
     public String getRoot() {
@@ -77,7 +72,6 @@ public class ServerConfig {
 
     /**
      * Retourne le chemin du fichier de log des accès.
-     *
      * @return Chemin du fichier de log des accès.
      */
     public String getAccess() {
@@ -86,7 +80,6 @@ public class ServerConfig {
 
     /**
      * Retourne le chemin du fichier de log des erreurs.
-     *
      * @return Chemin du fichier de log des erreurs.
      */
     public String getError() {

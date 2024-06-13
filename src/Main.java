@@ -1,3 +1,6 @@
+/**
+ * Lancement du serveur HTTP
+ */
 public class Main {
     private static ServerConfig config;
     public static void main(String[] args) {

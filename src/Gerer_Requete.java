@@ -1,6 +1,9 @@
 import java.io.*;
 import java.net.Socket;
 
+/**
+ * Classe qui récup
+ */
 public class Gerer_Requete {
     public static void handleRequest(Socket socket, ServerConfig config) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));

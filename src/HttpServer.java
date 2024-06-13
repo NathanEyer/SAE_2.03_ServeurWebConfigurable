@@ -2,17 +2,22 @@ import java.io.*;
 import java.net.*;
 
 public class HttpServer {
-    private ServerConfig config;
 
+    private final ServerConfig config;
+
+    /**
+     * Objet server
+     * @param config ServerConfig
+     */
     public HttpServer(ServerConfig config) {
         this.config = config;
     }
 
+    /**
+     * Lancement du serveur
+     */
     public void startServer() {
-        try {
-            // Ouvre le serveur sur le port
-            ServerSocket srv = new ServerSocket(config.getPort());
-
+        try (ServerSocket srv = new ServerSocket(config.getPort());) {
             // Informations de suivi du processus
             System.out.println("En attente de connexion sur le port " + config.getPort() + "...");
             System.out.println("Afficher la page: http://localhost:" + config.getPort() + "/index.html");
@@ -27,6 +32,7 @@ public class HttpServer {
                 Gerer_Requete.handleRequest(socket, config);
             }
         } catch (IOException e) {
+            //Affichage de l'erreur
             Log.write(e.getMessage(), config.getError());
         }
     }
