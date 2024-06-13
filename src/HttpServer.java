@@ -3,6 +3,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.*;
 import java.net.*;
 import java.io.*;
+import java.util.List;
 
 /**
  * Serveur Web configurable
@@ -98,10 +99,13 @@ public class HttpServer {
             while (true) {
                 // Accepte une nouvelle connexion
                 Socket socket = srv.accept();
-                ecritureAccess("Connexion du client " + socket.getInetAddress());
-
-                //Traite la requête
-                traitement_requete(socket);
+                ecritureAccess("Vérification de la connexion du client " + socket.getInetAddress());
+                if(verifierConnexion(socket.getInetAddress())){
+                    //Traite la requête
+                    traitement_requete(socket);
+                }else{
+                    ecritureError("" + new Error("Connexion refusée, " + socket.getInetAddress()) + " n'est pas autorisé.");
+                }
             }
         } catch (IOException e) {
             ecritureError("" + e);
@@ -192,5 +196,26 @@ public class HttpServer {
         } catch (IOException e) {
             ecritureError("" + e);
         }
+    }
+
+    /**
+     * Vérifie la connexion du client
+     * @param ip adresse ipp du client
+     * @return false si pas acceptée
+     */
+    public boolean verifierConnexion(InetAddress ip){
+        String clientIp = ip.getHostAddress();
+        String clientHost = ip.getHostName();
+
+        // Comparaison des adresses IP avec les valeurs accept et reject
+        if (clientIp.equals(reject) || clientHost.equals(reject)) {
+            return false;
+        }
+        if (clientIp.equals(accept) || clientHost.equals(accept)) {
+            return true;
+        }
+
+        // Accepter par défaut si aucune condition n'est remplie
+        return true;
     }
 }
