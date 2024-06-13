@@ -11,7 +11,7 @@ public class Gerer_Requete {
      * @param config server
      * @throws IOException exception
      */
-    public static void handleRequest(Socket socket, ServerConfig config) throws IOException {
+    public static void handleRequest(Socket socket, ServerConfig config, boolean refuse) throws IOException {
         //Ouverture des flux
         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
@@ -30,7 +30,15 @@ public class Gerer_Requete {
         String[] part = requete.split(" ");
         String lienB = config.getRoot() + "/" + part[1].substring(1);
 
-        //Page en cas d'erreur
+        //Si l'autorisation est refusée, affichage de la page 403
+        if(refuse){
+            //Affichage de la page d'erreur
+            dos.writeBytes("HTTP/1.1 403 Forbidden\r\n" + "Content-Type: text/html\r\n" + "\r\n" + "<html><body><h1>Accès interdit au document <a href=\""
+                    + lienB + "\">" + lienB + "</a>, désolé.</h1></body></html>");
+            dos.flush();
+        }
+
+        //Page en cas d'erreur 404
         String reponse404 = """
                 HTTP/1.1 404 Not Found\r
                 Content-Type: text/html\r
