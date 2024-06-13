@@ -1,0 +1,43 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class Gerer_Requete {
+  + Gerer_Requete(): 
+  + gererRequete(Socket, ServerConfig): void
+}
+class HttpServer {
+  + HttpServer(ServerConfig): 
+  - config: ServerConfig
+  + startServer(): void
+}
+class Log {
+  + Log(): 
+  + write(String, String): void
+  + clearLog(String): void
+}
+class Main {
+  + Main(): 
+  - config: ServerConfig
+  + main(String[]): void
+}
+class ServerConfig {
+  + ServerConfig(String): 
+  - root: String
+  - access: String
+  - port: int
+  - error: String
+  + getAccess(): String
+  + getError(): String
+  + getPort(): int
+  - getTagValue(Document, String, String): String
+  + getRoot(): String
+}
+
+HttpServer    "1" *-[#595959,plain]-> "config\n1" ServerConfig  
+Main           -[#595959,dashed]->  HttpServer    : "«create»"
+Main           -[#595959,dashed]->  ServerConfig  : "«create»"
+Main          "1" *-[#595959,plain]-> "config\n1" ServerConfig  
+@enduml
