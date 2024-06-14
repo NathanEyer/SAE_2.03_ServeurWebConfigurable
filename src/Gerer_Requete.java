@@ -70,7 +70,7 @@ public class Gerer_Requete {
         System.out.println(lienB);
 
 
-        //Ouverture du =='un fichier
+        //Ouverture du fichier
         File file = new File(lienB);
         try (FileInputStream fichier = new FileInputStream(file)) {
             //Lecture du fichier
