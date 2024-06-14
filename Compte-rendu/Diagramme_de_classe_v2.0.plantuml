@@ -1,0 +1,54 @@
+@startuml
+
+skinparam linetype ortho
+
+class Gerer_Requete {
+  + Gerer_Requete(): 
+  + handleRequest(Socket, ServerConfig, boolean): void
+}
+class HttpServer {
+  + HttpServer(ServerConfig): 
+  - config: ServerConfig
+  + verifierConnexion(InetAddress): boolean
+  + startServer(): void
+}
+class Log {
+  + Log(): 
+  + clearLog(String): void
+  + write(String, String): void
+}
+class Main {
+  + Main(): 
+  - config: ServerConfig
+  + main(String[]): void
+}
+class ServerConfig {
+  + ServerConfig(String): 
+  - reject: String
+  - access: String
+  - root: String
+  - error: String
+  - accept: String
+  - port: int
+  + getRoot(): String
+  + getAccept(): String
+  + getPort(): int
+  - getTagValue(Document, String, String): String
+  + getError(): String
+  + getAccess(): String
+  + getReject(): String
+}
+class Status {
+  + Status(): 
+  + ecrireStatus(): void
+  + espaceDisque(): int
+  + memoireDispo(): int
+  + nbProcessus(): int
+}
+
+HttpServer    "1" *-[#595959,plain]-> "configure\n1" ServerConfig
+Main           -[#595959,dashed]->  HttpServer    : "«crée»"
+Main           -[#595959,dashed]->  ServerConfig  : "«crée»"
+Main          "1" *-[#595959,plain]-> "config\n1" ServerConfig  
+Main           -[#595959,dashed]->  Status        : "«crée»"
+@enduml
