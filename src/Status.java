@@ -1,9 +1,7 @@
-import javax.swing.text.html.HTMLWriter;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.NumberFormat;
 
 /**
  * Affichage de l'état de la machine sur une page web
@@ -34,6 +32,13 @@ public class Status {
         return Runtime.getRuntime().availableProcessors();
     }
 
+
+    /**
+     * permet d'écrire dans le fichier status, les informations suivantes :
+     * La mémoire disponible
+     * L'espace disque disponible
+     * Le nombre de processus
+     */
     public void ecrireStatus(){
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("var/www/status.html"));
