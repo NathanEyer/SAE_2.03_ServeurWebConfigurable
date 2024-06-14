@@ -15,6 +15,9 @@ public class Main {
             Log.clearLog(config.getAccess());
             Log.clearLog(config.getError());
 
+            Status status = new Status();
+            status.ecrireStatus();
+
             //Lancement du serveur
             server.startServer();
         } catch (Exception e) {
