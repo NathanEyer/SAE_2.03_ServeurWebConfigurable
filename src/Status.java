@@ -34,6 +34,13 @@ public class Status {
         return Runtime.getRuntime().availableProcessors();
     }
 
+
+    /**
+     * permet d'écrire dans le fichier status, les informations suivantes :
+     * La mémoire disponible
+     * L'espace disque disponible
+     * Le nombre de processus
+     */
     public void ecrireStatus(){
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("var/www/status.html"));
