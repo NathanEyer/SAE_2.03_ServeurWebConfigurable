@@ -1,4 +1,9 @@
+import javax.swing.text.html.HTMLWriter;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.NumberFormat;
 
 /**
  * Affichage de l'état de la machine sur une page web
@@ -8,17 +13,17 @@ public class Status {
      * Récupération de la mémoire dispo
      * @return mémoire dispo
      */
-    public long memoireDispo(){
-        return Runtime.getRuntime().freeMemory();
+    public int memoireDispo(){
+        return Math.round((float) Runtime.getRuntime().freeMemory() / (1024*1024));
     }
 
     /**
      * Récupération de l'espace disque utilisable
      * @return long
      */
-    public long espaceDisque(){
-        File path = File.listRoots()[0];
-        return path.getUsableSpace();
+    public int espaceDisque(){
+        File disque = File.listRoots()[0];
+        return Math.round((float) disque.getUsableSpace() / (1024*1024*1024));
     }
 
     /**
@@ -27,5 +32,21 @@ public class Status {
      */
     public int nbProcessus(){
         return Runtime.getRuntime().availableProcessors();
+    }
+
+    public void ecrireStatus(){
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("var/www/status.html"));
+            String status = "<!DOCTYPE html>\n<head>\n<meta charset=\"UTF-8\">\n<title>STATUS</title>\n</head>\n<body>\n<h1>ETAT DE LA MACHINE:</h1>\n";
+            status += "<h2>Mémoire disponible: " + this.memoireDispo() + " Mo.</h2>\n";
+            status += "<h2>Espace disque disponible: " + this.espaceDisque() + " Go.</h2>\n";
+            status += "<h2>Nombre de processus: " + this.nbProcessus() +  " processeurs.</h2>\n";
+            status += "</body>\n</html>";
+            writer.write(status);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            Log.write(e.getMessage(), "error.log");
+        }
     }
 }
