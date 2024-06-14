@@ -1,7 +1,6 @@
 @startuml
 
-!theme plain
-top to bottom direction
+
 skinparam linetype ortho
 
 class Gerer_Requete {
@@ -36,8 +35,8 @@ class ServerConfig {
   + getRoot(): String
 }
 
-HttpServer    "1" *-[#595959,plain]-> "config\n1" ServerConfig  
-Main           -[#595959,dashed]->  HttpServer    : "«create»"
-Main           -[#595959,dashed]->  ServerConfig  : "«create»"
-Main          "1" *-[#595959,plain]-> "config\n1" ServerConfig  
+HttpServer    "1" *-[#595959,plain]-> "configure\n1" ServerConfig
+Main           -[#595959,dashed]->  HttpServer    : "«crée»"
+Main           -[#595959,dashed]->  ServerConfig  : "«crée»"
+Main          "1" *-[#595959,plain]-> "utilise\n1" ServerConfig
 @enduml
