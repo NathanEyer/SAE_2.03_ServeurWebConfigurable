@@ -1,0 +1,133 @@
+Description globale
+Ce programme en Java implémente un serveur HTTP configurable qui peut être démarré et configuré à partir d'un fichier XML
+Le serveur est capable de lire des fichiers de configuration, de stocker les accès et les erreurs potentielles, et de traiter des requêtes HTTP simples
+Le programme est divisé en plusieurs classes pour une meilleure lisibilté et pour fonctionner de façon plus agile
+
+
+
+
+Classe ServerConfig
+La classe ServerConfig est chargée de lire et de stocker les paramètres de configuration du serveur depuis un fichier XML
+ Ces paramètres sont :
+            - le port d'écoute
+            - le chemin racine pour les fichiers du serveur
+            - le chemin du fichier de stockage des accès
+            - le chemin du fichier des erreurs
+
+Responsabilités :
+- Lire le fichier XML de configuration.
+- Fournir les valeurs des paramètres de configuration via des méthodes getter
+
+
+
+
+
+
+Classe Log
+La classe Log gère le suivi des événements d'accès et des erreurs du serveur
+Elle permet d'écrire des messages dans les fichiers de log spécifiés par la configuration
+
+Responsabilités :
+- Écrire des messages dans les fichiers de log
+- Effacer les fichiers de log si nécessaire
+
+Liens avec d'autres classes :
+- Utilisée par Gerer_Requete pour faire le suivi des requêtes et des erreurs
+- Les chemins des fichiers de log sont fournis par ServerConfig
+
+
+
+
+
+
+Classe Gerer_Requete
+La classe Gerer_Requete est responsable de traiter les requêtes HTTP reçues par le serveur.
+Elle lit la requête, détermine le fichier demandé, et envoie une réponse au client.
+
+Responsabilités :
+-Lire les requêtes HTTP
+Fait le suivi des requêtes via la classe Log
+Envoyer des réponses HTTP au navigateur (200 OK ou une erreur 404(ne trouve pas la ressource), ou erreur 403(utilisateur pas accordé)
+
+Liens avec d'autres classes :
+- Instanciée par HttpServer pour chaque connexion
+- Utilise ServerConfig pour obtenir le chemin des fichiers.
+- Utilise Log pour faire le suivi des accès et des erreurs.
+
+
+
+
+
+Classe HttpServer
+La classe HttpServer est le point d'entrée principal du programme.
+Elle initialise le serveur, charge la configuration, et gère les connexions entrantes.
+Elle est responsable de démarrer le serveur et de déléguer le traitement des requêtes à des instances de Gerer_Requete.
+
+Responsabilités :
+- Charger la configuration du serveur via ServerConfig.
+- Démarrer le serveur sur le port configuré.
+- Accepter les connexions entrantes et créer des Gerer_Requetes pour traiter les requêtes.
+
+Liens avec d'autres classes :
+- Utilise ServerConfig pour initialiser les paramètres du serveur.
+- Crée des instances de Gerer_Requete pour traiter les requêtes HTTP.
+- Utilise Log pour nettoyer les fichiers de log au démarrage.
+
+
+
+Classe Status
+La classe Status est conçue pour fournir des informations sur l'état de la machine hôte.
+Elle récupère des données
+        - la mémoire disponible,
+        - l'espace disque utilisable
+        - le nombre de processeurs disponibles.
+
+Responsabilités :
+Fournir des informations sur la mémoire disponible de la machine.
+Fournir des informations sur l'espace disque utilisable.
+Fournir des informations sur le nombre de processeurs disponibles.
+
+
+
+
+
+
+La classe Main
+
+La classe Main exécute le programme.
+Elle initialise le serveur en chargeant la configuration et en démarrant le processus principal.
+
+Responsabilités :
+Charger la configuration du serveur.
+Initialiser le serveur HTTP avec cette configuration.
+Démarrer le serveur pour accepter et traiter les requêtes entrantes.
+
+
+
+
+
+
+
+Fonctionnement Global
+
+Chargement de la Configuration :
+HttpServer charge la configuration à partir d'un fichier XML en utilisant ServerConfig.
+
+Initialisation et Démarrage du Serveur :
+HttpServer initialise le serveur avec les paramètres fournis par ServerConfig et commence à écouter sur le port spécifié.
+
+Traitement des Requêtes :
+Pour chaque connexion entrante, HttpServer crée une instance de Gerer_Requete.
+Gerer_Requete lit la requête, fait un suivi des détails via la classe Log,
+et répond au client en envoyant le fichier demandé ou un message d'erreur 404.
+
+Journalisation :
+La classe Log est utilisé par la classe Gerer_Requet pour écrire des logs des accès et des erreurs dans les fichiers associés.
+
+
+
+
+
+
+
+
