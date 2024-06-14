@@ -24,7 +24,9 @@ public class Main {
             String bashCode = "#bin/bash\ndate";
             String cCode = "#include <stdio.h>\n#include <time.h>\n\n int main(void) {\n time_t now;\n time(&now);\n printf(\"%s\", ctime(&now));\n return 0;\n}";
             String pythonCode = "import time\nimport datetime\ntimestamp = time.time()\ndate_obj = datetime.datetime.fromtimestamp(timestamp)\nprint(date_obj)";
-            codeDynamique.ecrireCodeDynamique(bashCode, cCode, pythonCode);
+            String rubyCode = "require 'date'\nputs Date.today";
+            String cPP = "#include <iostream> #include <ctime> #include <iomanip> int main() { std::time_t now = std::time(nullptr); std::tm* t = std::localtime(&now); std::cout << std::put_time(t, \"%Y-%m-%d\") << std::endl; return 0;}";
+            codeDynamique.ecrireCodeDynamique(bashCode, cCode, pythonCode, rubyCode, cPP);
 
             //Lancement du serveur
             server.startServer();

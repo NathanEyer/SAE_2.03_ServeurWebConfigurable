@@ -50,8 +50,9 @@ public class Status {
             writer.write(status);
             writer.flush();
             writer.close();
+            Log.write("Création de la page de l'état de la machine effectuée", "var/log/myweb/access.log");
         } catch (IOException e) {
-            Log.write(e.getMessage(), "error.log");
+            Log.write(e.getMessage(), "var/log/myweb/error.log");
         }
     }
 }
