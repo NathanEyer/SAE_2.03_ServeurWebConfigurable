@@ -36,6 +36,7 @@ public class ServerConfig {
         }
 
         // Récupère et initialise les valeurs des balises de configuration avec des valeurs par défaut si nécessaire
+        assert xml != null;
         this.port = Integer.parseInt(getTagValue(xml, "port", "8080"));
         this.root = getTagValue(xml, "root", "var/www");
         this.access = getTagValue(xml, "accesslog", "var/log/myweb/access.log");
