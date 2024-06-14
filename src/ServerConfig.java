@@ -14,6 +14,8 @@ public class ServerConfig {
     private final String root;
     private final String access;
     private final String error;
+    private final String accept;
+    private final String reject;
 
     /**
      * Lit le fichier XML de configuration et initialise les variables.
@@ -38,6 +40,8 @@ public class ServerConfig {
         this.root = getTagValue(xml, "root", "var/www");
         this.access = getTagValue(xml, "accesslog", "var/log/myweb/access.log");
         this.error = getTagValue(xml, "errorlog", "var/log/myweb/error.log");
+        this.accept = getTagValue(xml, "accept", "192.168.0.0/24");
+        this.reject = getTagValue(xml, "reject", "192.168.1.0/24");
     }
 
     /**
@@ -84,5 +88,21 @@ public class ServerConfig {
      */
     public String getError() {
         return error;
+    }
+
+    /**
+     * Retourne l'adresse IP acceptée
+     * @return IP
+     */
+    public String getAccept() {
+        return accept;
+    }
+
+    /**
+     * Retourne l'adresse IP refusée
+     * @return IP
+     */
+    public String getReject() {
+        return reject;
     }
 }
