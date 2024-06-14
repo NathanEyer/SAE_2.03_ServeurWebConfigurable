@@ -1,0 +1,68 @@
+@startuml
+
+skinparam linetype ortho
+
+class CodeDynamique {
+  + CodeDynamique(String): 
+  - code: String
+  - nomHtml: String
+  + ecrireCodeDynamique(String, String, String): void
+  + ecrireCode(String, String): void
+  + ajoutCodeCompile(ProcessBuilder): void
+}
+class Encoder64 {
+  + Encoder64(): 
+  ~ etreBinaire(String): boolean
+  + encodeBase64(byte[]): String
+}
+class Gerer_Requete {
+  + Gerer_Requete(): 
+  + handleRequest(Socket, ServerConfig, boolean): void
+}
+class HttpServer {
+  + HttpServer(ServerConfig): 
+  - config: ServerConfig
+  + startServer(): void
+  + verifierConnexion(InetAddress): boolean
+}
+class Log {
+  + Log(): 
+  + write(String, String): void
+  + clearLog(String): void
+}
+class Main {
+  + Main(): 
+  - config: ServerConfig
+  + main(String[]): void
+}
+class ServerConfig {
+  + ServerConfig(String): 
+  - port: int
+  - error: String
+  - root: String
+  - access: String
+  - accept: String
+  - reject: String
+  + getAccess(): String
+  - getTagValue(Document, String, String): String
+  + getError(): String
+  + getPort(): int
+  + getRoot(): String
+  + getReject(): String
+  + getAccept(): String
+}
+class Status {
+  + Status(): 
+  + nbProcessus(): int
+  + memoireDispo(): int
+  + ecrireStatus(): void
+  + espaceDisque(): int
+}
+
+HttpServer    "1" *-[#595959,plain]-> "configure\n1" ServerConfig
+Main           -[#595959,dashed]->  CodeDynamique : "«crée»"
+Main           -[#595959,dashed]->  HttpServer    : "«crée»"
+Main          "1" *-[#595959,plain]-> "configure\n1" ServerConfig
+Main           -[#595959,dashed]->  ServerConfig  : "«crée»"
+Main           -[#595959,dashed]->  Status        : "«crée»"
+@enduml
