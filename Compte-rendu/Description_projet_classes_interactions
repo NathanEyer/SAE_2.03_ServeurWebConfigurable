@@ -75,6 +75,8 @@ Liens avec d'autres classes :
 
 
 
+
+
 Classe Status
 La classe Status est conçue pour fournir des informations sur l'état de la machine hôte.
 Elle récupère des données
@@ -92,6 +94,22 @@ Fournir des informations sur le nombre de processeurs disponibles.
 
 
 
+Classe Encoder64
+La classe Encoder64 est responsable de convertir des données binaires en format base64.
+Son rôle principal est de faciliter l'intégration et la transmission sécurisée de fichiers binaires via les réponses HTTP
+
+Responsabilités
+- Convertir les données binaires en une représentation texte ASCII conforme au standard Base64.
+- Assurer que les fichiers binaires peuvent être correctement inclus et transmis dans les réponses HTTP
+
+Liens avec les Autres Classes
+- Employée pour encoder les fichiers binaires avant de les inclure dans les réponses HTTP gérées par Gerer_Requete.
+
+
+
+
+
+
 La classe Main
 
 La classe Main exécute le programme.
@@ -101,8 +119,6 @@ Responsabilités :
 Charger la configuration du serveur.
 Initialiser le serveur HTTP avec cette configuration.
 Démarrer le serveur pour accepter et traiter les requêtes entrantes.
-
-
 
 
 
