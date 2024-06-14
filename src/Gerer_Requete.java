@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
 
 /**
  * Classe qui récup
@@ -70,23 +71,31 @@ public class Gerer_Requete {
         System.out.println(lienB);
 
 
-        //Ouverture du fichier
+        // Ouverture du fichier
         File file = new File(lienB);
         try (FileInputStream fichier = new FileInputStream(file)) {
-            //Lecture du fichier
             byte[] content = fichier.readAllBytes();
-            dos.writeBytes("HTTP/1.1 200 OK\r\n");
-            dos.writeBytes("\r\n");
-            dos.write(content);
+            String contentType = Files.probeContentType(file.toPath());
+
+            if (Encoder64.etreBinaire(contentType)) {
+                String base64Content = Encoder64.encodeBase64(content);
+                dos.writeBytes("HTTP/1.1 200 OK\r\nContent-Type: " + contentType + "\r\nContent-Encoding: base64\r\nContent-Length: " + base64Content.length() + "\r\n\r\n");
+                dos.writeBytes(base64Content);
+            } else {
+                dos.writeBytes("HTTP/1.1 200 OK\r\nContent-Type: " + contentType + "\r\n\r\n");
+                dos.write(content);
+            }
+
             dos.flush();
         } catch (FileNotFoundException e) {
-            //Affichage de la page d'erreur
+            // Affichage de la page d'erreur
             dos.writeBytes(reponse404);
             dos.flush();
-            //Ecriture de l'erreur
-            Log.write(e.getMessage(), config.getError());
-            Log.write("Connexion refusée: " + e.getMessage(), config.getAccess());
+            // Ecriture de l'erreur
+            Log.write(e.getMessage(), "error.log");
+            Log.write("Connexion refusée: " + e.getMessage(), "error.log");
         }
     }
 }
+
 
