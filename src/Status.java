@@ -1,9 +1,7 @@
-import javax.swing.text.html.HTMLWriter;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.NumberFormat;
 
 /**
  * Affichage de l'état de la machine sur une page web
