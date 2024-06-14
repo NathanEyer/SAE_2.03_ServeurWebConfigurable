@@ -22,6 +22,7 @@ public class HttpServer {
             System.out.println("En attente de connexion sur le port " + config.getPort() + "...");
             System.out.println("Afficher la page: http://localhost:" + config.getPort() + "/index.html");
             System.out.println("Afficher l'état de la machine: http://localhost:" + config.getPort() + "/status");
+            System.out.println("Exécuter du code dans une page html: http://localhost:" + config.getPort() + "/code.html");
 
             // Condition infinie
             while (true) {
